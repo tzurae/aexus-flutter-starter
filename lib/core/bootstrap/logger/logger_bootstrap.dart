@@ -1,0 +1,79 @@
+import 'package:rizzlt_flutter_starter/constants/enums/env_enum.dart';
+import 'package:rizzlt_flutter_starter/core/bootstrap/app_config_service.dart';
+import 'package:rizzlt_flutter_starter/core/logger/config.dart';
+import 'package:rizzlt_flutter_starter/core/logger/index.dart';
+
+class LoggerBootstrap {
+  static late final LoggerBootstrap _instance = LoggerBootstrap._internal();
+  static LoggerBootstrap get instance => _instance;
+  final AppConfigService _appConfigService;
+  bool _initialized = false;
+  LoggerBootstrap._internal() : _appConfigService = AppConfigService.instance;
+
+  Future<void> init() async {
+    if (_initialized) return;
+    final LogConfig config = _getConfigForEnv();
+    await Log.init(config);
+    await _configOutputs();
+    _initialized = true;
+    Log.logger.i('日誌系統初始化完成，環境:  ${_appConfigService.env} ');
+  }
+
+  LogConfig _getConfigForEnv() {
+    switch (_appConfigService.env) {
+      case EnvEnum.development:
+        return LogConfig.development;
+      case EnvEnum.test:
+        return LogConfig.test;
+      case EnvEnum.production:
+        return LogConfig.production;
+      default:
+        return LogConfig.development;
+    }
+  }
+
+  _configOutputs() {
+    final env = _appConfigService.environment;
+
+    // 根據環境添加不同的輸出
+    if (env == EnvEnum.production) {
+      // 生產環境配置
+      if (_appConfigService.enableCrashReporting) {
+        // Log.addOutput(CrashlyticsOutput());
+      }
+
+      // 如果配置了遠程日誌服務
+      // if (_appConfigService.remoteLoggingEndpoint.isNotEmpty) {
+      //   Log.addOutput(NetworkOutput(
+      //     endpoint: _appConfigService.remoteLoggingEndpoint,
+      //   ));
+      // }
+    } else if (env == EnvEnum.development) {
+      // 開發環境配置
+      // if (!kIsWeb) {
+      //   // 非Web平台
+      //   Log.addOutput(DatabaseOutput(maxEntries: 5000));
+      // }
+
+      // 開發環境可能需要更詳細的控制台輸出
+      // Log.addOutput(ConsoleLogOutput());
+    }
+
+    // 測試環境配置
+    if (env == EnvEnum.test) {
+      // 測試環境可能需要特殊的測試輸出
+      // Log.addOutput(TestLogOutput());
+    }
+
+    // 通用配置：如果啟用了分析
+    if (_appConfigService.enableAnalytics) {
+      // Log.addOutput(AnalyticsOutput());
+    }
+  }
+
+  Future<void> close() async {
+    if (!_initialized) return;
+    await Log.close();
+    _initialized = true;
+  }
+}
