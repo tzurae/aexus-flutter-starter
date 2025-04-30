@@ -39,6 +39,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.4.2
+  mocktail: ^1.0.1
 
   # The following adds the launcher icon support to your application.
   # run below mentioned commands to generate launcher icons
@@ -47,7 +49,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   mobx_codegen: ^2.2.0
   build_runner: ^2.3.3
-  analyzer: ^5.10.0
+  analyzer: ^6.11.0
 
 flutter_icons:
   image_path: "assets/icons/ic_launcher.png"

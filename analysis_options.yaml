@@ -73,6 +73,7 @@ linter:
     sort_pub_dependencies: true
     use_key_in_widget_constructors: true
 
+    # Clean Architecture
     no_logic_in_create_state: true
     avoid_classes_with_only_static_members: false
     constant_identifier_names: true
