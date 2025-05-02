@@ -24,7 +24,7 @@ dependencies:
   infra:
     path: ./packages/infra
 
-  flutter_dotenv: ^5.2.1
+  # flutter_dotenv: ^5.2.1 # Removed dependency
   firebase_crashlytics: ^4.3.4
   firebase_analytics: ^11.4.4
 
@@ -62,7 +62,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/lang/
-    - .env
+    # - .env # Removed .env from assets as it's no longer loaded this way
 
   fonts:
     - family: ProductSans
