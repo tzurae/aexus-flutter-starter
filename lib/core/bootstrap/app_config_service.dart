@@ -18,11 +18,9 @@ class AppConfigService {
     await dotenv.load();
     final envString = dotenv.env['ENV'] ?? 'dev';
     _env = _parseEnv(envString);
-    // 讀取其他配置
     _supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
     _supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
 
-    // 根據環境設置預設值
     _enableCrashReporting = _env == EnvEnum.production;
     _enableAnalytics = _env != EnvEnum.test;
 
@@ -44,25 +42,18 @@ class AppConfigService {
     }
   }
 
-  /// 獲取當前環境
   EnvEnum get environment => _env;
 
-  /// 獲取環境名稱
   EnvEnum get env => _env;
 
-  /// Supabase URL
   String get supabaseUrl => _supabaseUrl;
 
-  /// Supabase 匿名密鑰
   String get supabaseAnonKey => _supabaseAnonKey;
 
-  /// 是否啟用崩潰報告
   bool get enableCrashReporting => _enableCrashReporting;
 
-  /// 是否啟用分析
   bool get enableAnalytics => _enableAnalytics;
 
-  /// 獲取指定的環境變數
   String? getEnv(String key) {
     return dotenv.env[key];
   }
