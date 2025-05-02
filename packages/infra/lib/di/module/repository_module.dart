@@ -21,21 +21,21 @@ class RepositoryModule {
   static Future<void> configureRepositoryModuleInjection() async {
     // repository:--------------------------------------------------------------
     getIt.registerSingleton<SettingRepository>(SettingRepositoryImpl(
-      getIt<ThemeLocalDataSource>(), // Inject ThemeLocalDataSource
-      getIt<LocaleLocalDataSource>(), // Inject LocaleLocalDataSource
+      getIt<ThemeLocalDataSource>(),
+      getIt<LocaleLocalDataSource>(),
     ));
 
     getIt.registerSingleton<ThemeRepository>(ThemeRepositoryImpl(
-      getIt<ThemeLocalDataSource>(), // Inject ThemeLocalDataSource
+      getIt<ThemeLocalDataSource>(),
     ));
 
     getIt.registerSingleton<LocaleRepository>(LocaleRepositoryImpl(
-      getIt<LocaleLocalDataSource>(), // Inject LocaleLocalDataSource
+      getIt<LocaleLocalDataSource>(),
     ));
 
     getIt.registerSingleton<AuthRepository>(AuthRepositoryImpl(
-      getIt<AuthRemoteDataSource>(), // Inject AuthLocalDataSource
-      getIt<AuthLocalDataSource>(), // Inject AuthLocalDataSource
+      getIt<AuthRemoteDataSource>(),
+      getIt<AuthLocalDataSource>(),
     ));
 
     getIt.registerSingleton<PostRepository>(PostRepositoryImpl(

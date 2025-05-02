@@ -16,7 +16,8 @@ class LoggerBootstrap {
     await Log.init(config);
     await _configOutputs();
     _initialized = true;
-    Log.logger.i('日誌系統初始化完成，環境:  ${_appConfigService.env} ');
+    Log.logger.i(
+        'Logging system initialization completed, environment: ${_appConfigService.env} ');
   }
 
   LogConfig _getConfigForEnv() {
@@ -35,37 +36,37 @@ class LoggerBootstrap {
   _configOutputs() {
     final env = _appConfigService.environment;
 
-    // 根據環境添加不同的輸出
+    // Add different outputs based on environment
     if (env == EnvEnum.production) {
-      // 生產環境配置
+      // Production environment configuration
       if (_appConfigService.enableCrashReporting) {
         // Log.addOutput(CrashlyticsOutput());
       }
 
-      // 如果配置了遠程日誌服務
+      // If remote logging service is configured
       // if (_appConfigService.remoteLoggingEndpoint.isNotEmpty) {
       //   Log.addOutput(NetworkOutput(
       //     endpoint: _appConfigService.remoteLoggingEndpoint,
       //   ));
       // }
     } else if (env == EnvEnum.development) {
-      // 開發環境配置
+      // Development environment configuration
       // if (!kIsWeb) {
-      //   // 非Web平台
+      //   // Non-Web platform
       //   Log.addOutput(DatabaseOutput(maxEntries: 5000));
       // }
 
-      // 開發環境可能需要更詳細的控制台輸出
+      // Development environment may need more detailed console output
       // Log.addOutput(ConsoleLogOutput());
     }
 
-    // 測試環境配置
+    // Test environment configuration
     if (env == EnvEnum.test) {
-      // 測試環境可能需要特殊的測試輸出
+      // Test environment may need special test outputs
       // Log.addOutput(TestLogOutput());
     }
 
-    // 通用配置：如果啟用了分析
+    // Common configuration: if analytics is enabled
     if (_appConfigService.enableAnalytics) {
       // Log.addOutput(AnalyticsOutput());
     }

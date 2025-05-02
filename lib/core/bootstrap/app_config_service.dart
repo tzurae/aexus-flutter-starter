@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart'
+    show kDebugMode; // For print statements
 import 'package:rizzlt_flutter_starter/constants/enums/env_enum.dart';
-import 'package:flutter/foundation.dart' show kDebugMode; // For print statements
 
 class AppConfigService {
   static final AppConfigService _instance = AppConfigService._internal();
@@ -31,18 +32,22 @@ class AppConfigService {
     // Validate required keys, especially for production
     if (_env == EnvEnum.production) {
       if (_supabaseUrl.isEmpty) {
-        throw Exception('SUPABASE_URL must be provided via --dart-define for production builds.');
+        throw Exception(
+            'SUPABASE_URL must be provided via --dart-define for production builds.');
       }
       if (_supabaseAnonKey.isEmpty) {
-        throw Exception('SUPABASE_ANON_KEY must be provided via --dart-define for production builds.');
+        throw Exception(
+            'SUPABASE_ANON_KEY must be provided via --dart-define for production builds.');
       }
       if (_xxteaPassword.isEmpty) {
         // Decide if xxtea password is required for production
         // If yes, uncomment the line below:
         // throw Exception('XXTEA_PASSWORD must be provided via --dart-define for production builds.');
         // If no, you might want to log a warning or handle it differently
-        if (kDebugMode) { // Only print warnings in debug/dev mode
-          print('Warning: XXTEA_PASSWORD not provided via --dart-define for production build.');
+        if (kDebugMode) {
+          // Only print warnings in debug/dev mode
+          print(
+              'Warning: XXTEA_PASSWORD not provided via --dart-define for production build.');
         }
       }
     } else {
@@ -59,7 +64,6 @@ class AppConfigService {
         // _xxteaPassword = 'default_dev_password';
       }
     }
-
 
     _enableCrashReporting = _env == EnvEnum.production;
     _enableAnalytics = _env != EnvEnum.test;
@@ -95,7 +99,4 @@ class AppConfigService {
   bool get enableCrashReporting => _enableCrashReporting;
 
   bool get enableAnalytics => _enableAnalytics;
-
-  // Removed getEnv method as dotenv is no longer used.
-  // Use String.fromEnvironment directly if other non-sensitive vars are needed.
 }
