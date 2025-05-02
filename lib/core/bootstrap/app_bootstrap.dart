@@ -11,13 +11,12 @@ class AppBootstrap {
   AppBootstrap._internal();
 
   Future<void> initialize() async {
-    // 1. infra
+    // Warning: The order of initialization is important
     await WidgetsFlutterBinding.ensureInitialized();
     await _setPreferredOrientations();
-    await SupabaseClientWrapper.initialize();
 
-    // 2. config
     await AppConfigService.instance.init();
+    await SupabaseClientWrapper.initialize();
 
     // 3. log
     await LoggerBootstrap.instance.init();
