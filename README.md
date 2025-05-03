@@ -1,7 +1,17 @@
-# Flutter Starter Kit: Clean Architecture & Feature-Rich
+<br />
+<div style="text-align: center; width: 100%;">
+  <img src="./assets/images/aexus.svg" alt="aexus logo" style="width: 100%;">
+</div>
 
-Welcome! 👋 This repository provides a robust starter kit for building Flutter applications using **Clean Architecture** principles. It's designed to be scalable, maintainable, and testable, incorporating many best practices and common features needed for modern app development.
+---
+# Aexus 
 
+---
+
+Welcome! 👋 
+
+**Aexus** provides a robust starter kit for building Flutter applications using **Clean Architecture** principles.
+It's designed to be scalable, maintainable, and testable, incorporating many best practices and common features needed for modern app development.
 Whether you're starting a new project or looking for a solid foundation, this template aims to accelerate your development process.
 
 ## Table of Contents
@@ -72,11 +82,11 @@ Crucially, dependencies flow **inwards**:
 The `Domain` layer is the center and knows nothing about the outer layers. The `Infrastructure` layer implements interfaces defined in the `Domain` layer, effectively inverting the dependency. This makes the core logic independent and replaceable.
 
 ```
-+-------------------+      +-----------------+      +----------------+      +----------------------+
-| Presentation      | ---> | Application     | ---> | Domain         | <--- | Infrastructure       |
-| (UI, State Mgmt)  |      | (Use Cases, DTOs)|      | (Entities, Rules|      | (DB, API, Devices)   |
++-------------------+      +------------------+      +----------------+      +----------------------+
+| Presentation      | ---> | Application      | ---> | Domain         | <--- | Infrastructure       |
+| (UI, State Mgmt)  |      | (Use Cases, DTOs)|      | (Entities,Rules|      | (DB, API, Devices)   |
 | depends on App    |      | depends on Domain|      | Interfaces)    |      | implements Domain    |
-+-------------------+      +-----------------+      +----------------+      +----------------------+
++-------------------+      +------------------+      +----------------+      +----------------------+
 ```
 
 ## Key Features 🚀
@@ -131,11 +141,75 @@ Ready to dive in? Follow these steps:
     ```
 
 4.  **Configure Environment:**
-    *   Create your environment configuration file by copying the example:
-        ```bash
-        cp .env.example .env
-        ```
-    *   Open the `.env` file and fill in your actual API keys, URLs (like Supabase URL/Key), etc. **Never commit your `.env` file with secrets to version control!** The `.gitignore` file should already be configured to ignore `.env`.
+    *   This project uses `--dart-define` for environment configuration rather than `.env` files.
+    *   Required environment variables:
+    ```
+        ENV=dev|test|prod         # Application environment
+        SUPABASE_URL=your_url     # Your Supabase project URL
+        SUPABASE_ANON_KEY=your_key # Your Supabase anonymous key
+        XXTEA_PASSWORD=your_password # Password for local database encryption
+    ```
+*   When running from command line:
+    ```bash
+    flutter run --dart-define=ENV=dev --dart-define=SUPABASE_URL=your_url --dart-define=SUPABASE_ANON_KEY=your_key --dart-define=XXTEA_PASSWORD=your_password
+    ```
+*   For production builds:
+    ```bash
+    flutter build apk --dart-define=ENV=prod --dart-define=SUPABASE_URL=your_url --dart-define=SUPABASE_ANON_KEY=your_key --dart-define=XXTEA_PASSWORD=your_password
+    ```
+
+### IDE Configuration for Sensitive Information
+
+#### VS Code
+1. Create a `launch.json` file in the `.vscode` folder (create if it doesn't exist):
+   ```json
+   {
+     "version": "0.2.0",
+     "configurations": [
+       {
+         "name": "Flutter Development",
+         "request": "launch",
+         "type": "dart",
+         "args": [
+           "--dart-define=ENV=dev",
+           "--dart-define=SUPABASE_URL=your_url",
+           "--dart-define=SUPABASE_ANON_KEY=your_key",
+           "--dart-define=XXTEA_PASSWORD=your_password"
+         ]
+       },
+       {
+         "name": "Flutter Production",
+         "request": "launch",
+         "type": "dart",
+         "args": [
+           "--dart-define=ENV=prod",
+           "--dart-define=SUPABASE_URL=your_url",
+           "--dart-define=SUPABASE_ANON_KEY=your_key",
+           "--dart-define=XXTEA_PASSWORD=your_password"
+         ]
+       }
+     ]
+   }
+   ```
+2. Add `.vscode/launch.json` to your `.gitignore` file to avoid committing secrets.
+3. For team sharing, you can create a `launch.json.example` with placeholders instead of real values.
+
+#### JetBrains IDEs (IntelliJ IDEA, Android Studio)
+1. Go to **Run** > **Edit Configurations**.
+2. Select your Flutter application configuration.
+3. In the **Additional run args** field, add:
+   ```
+   --dart-define=ENV=dev --dart-define=SUPABASE_URL=your_url --dart-define=SUPABASE_ANON_KEY=your_key --dart-define=XXTEA_PASSWORD=your_password
+   ```
+4. For different environments, create multiple run configurations with appropriate variables.
+5. For secure team sharing:
+    * Use the Jetbrains built-in passwords safe to store sensitive values
+    * Create shared run configurations with placeholders using `$VARIABLE_NAME$` syntax
+    * Each developer can define their own values in Environment Variables settings
+
+### CI/CD Configuration
+
+For CI/CD pipelines, securely store these values as encrypted environment variables or secrets in your CI/CD provider (GitHub Actions, CircleCI, etc.) and pass them during build steps.
 
 5.  **Run Code Generation:**
     This project relies on code generation (e.g., for `get_it` dependency injection setup). Run this command once:
