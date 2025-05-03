@@ -67,8 +67,14 @@ The codebase is organized into packages, each representing a layer:
 
 4.  **`packages/presentation` (Presentation Layer):**
     *   **User Interface:** Manages everything the user sees and interacts with.
-    *   **Contents:** Screens/Pages, Widgets, State Management logic (Bloc/Cubit stores like `AuthStore`, `PostListStore`), UI constants (colors, themes, assets), navigation logic (`AppRouter`), and UI utilities.
+    *   **Architecture:** Uses a feature-based organization with Store + ViewModel pattern:
+        *   **Store:** Manages state and coordinates with Application layer.
+        *   **ViewModel:** Transforms data for UI consumption, handles formatting and UI logic.
+        *   **Screen/Widget:** Pure UI components that consume ViewModels and user interactions.
+    *   **Organization:** Code is organized by business domain rather than technical layers.
+    *   **Contents:** Screens/Pages, Widgets, State Management (Stores like `AuthStore`), ViewModels (`LoginViewModel`), UI constants, and navigation logic.
     *   **Key Principle:** Depends on the `applications` layer to trigger actions and receive data (usually via DTOs).
+    *   [Detailed Architecture Documentation](./packages/presentation/README.md)
 
 5.  **Root `lib/` Directory:**
     *   **Entry Point & Globals:** Contains the main application entry point (`main.dart`), global service initialization (Dependency Injection, Logging, Configuration), and core shared services or constants.
