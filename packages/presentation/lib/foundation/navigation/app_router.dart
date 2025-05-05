@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:presentation/features/auth/login.dart';
+import 'package:presentation/features/auth/login_screen.dart';
 import 'package:presentation/features/auth/store/auth_store.dart';
-import 'package:presentation/features/home/home.dart';
-import 'package:presentation/features/post/post_list.dart';
-import 'package:presentation/features/postdetail/post_detail.dart';
+import 'package:presentation/features/home/home_screen.dart';
+import 'package:presentation/features/post/post_list_screen.dart';
+import 'package:presentation/features/postdetail/post_detail_screen.dart';
 
 class AppRouter {
   static GoRouter get router => _router;

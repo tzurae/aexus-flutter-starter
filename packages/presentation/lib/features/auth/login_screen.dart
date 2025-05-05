@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presentation/features/auth/store/auth_state.dart';
 import 'package:presentation/features/auth/store/auth_store.dart';
+import 'package:presentation/features/auth/viewmodel/login_viewmodel.dart';
 import 'package:presentation/foundation/navigation/navigation_service.dart';
-import 'package:presentation/foundation/store/form/form_state.dart';
-import 'package:presentation/foundation/store/form/form_store.dart';
 import 'package:presentation/foundation/widgets/empty_app_bar_widget.dart';
 import 'package:presentation/foundation/widgets/progress_indicator_widget.dart';
 import 'package:presentation/foundation/widgets/rounded_button_widget.dart';
@@ -13,18 +12,24 @@ import 'package:presentation/foundation/widgets/textfield_widget.dart';
 import 'package:presentation/shared/constants/assets.dart';
 import 'package:presentation/shared/utils/device/device_utils.dart';
 import 'package:presentation/shared/utils/locale/app_localization.dart';
-import 'package:rizzlt_flutter_starter/di/service_locator.dart';
 import 'package:rizzlt_flutter_starter/main.dart';
 
 class LoginScreen extends StatefulWidget {
   final NavigationService navigationService;
+  final AuthStore authStore;
+  final LoginViewModel loginViewModel;
+
   const LoginScreen({
     required this.navigationService,
+    required this.authStore,
+    required this.loginViewModel,
     super.key,
   });
   static Widget create() {
     return LoginScreen(
       navigationService: GetIt.instance<NavigationService>(),
+      authStore: GetIt.instance<AuthStore>(),
+      loginViewModel: GetIt.instance<LoginViewModel>(),
     );
   }
 
@@ -33,15 +38,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //text controllers:-----------------------------------------------------------
   final TextEditingController _userEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  //stores:---------------------------------------------------------------------
-  final MyFormStore _formStore = getIt<MyFormStore>();
-  final AuthStore _authStore = getIt<AuthStore>();
-
-  //focus node:-----------------------------------------------------------------
   late FocusNode _passwordFocusNode;
 
   @override
@@ -84,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginProgressIndicator() {
     return BlocBuilder<AuthStore, AuthState>(
-      bloc: _authStore,
+      bloc: widget.authStore,
       builder: (context, state) {
         if (state.isLoggingIn) {
           return const CustomProgressIndicatorWidget();
@@ -100,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoggedInStatusListener() {
     return BlocListener<AuthStore, AuthState>(
-        bloc: _authStore,
+        bloc: widget.authStore,
         listener: (context, state) {
           if (state.isLoggedIn) {
             widget.navigationService.goToHome();
@@ -140,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 24.0),
             _buildEmailField(),
+            const SizedBox(height: 20),
             _buildPasswordField(),
             _buildForgotPasswordButton(),
             _buildSignInButton()
@@ -150,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildEmailField() {
-    return BlocBuilder<MyFormStore, MyFormState>(
-      bloc: _formStore,
+    return BlocBuilder<LoginViewModel, LoginViewState>(
+      bloc: widget.loginViewModel,
       buildWhen: (previous, current) =>
-          previous.userEmail != current.userEmail ||
-          previous.formErrorState.userEmail != current.formErrorState.userEmail,
+          previous.email != current.email ||
+          previous.emailError != current.emailError,
       builder: (context, state) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -175,12 +174,12 @@ class _LoginScreenState extends State<LoginScreen> {
             inputAction: TextInputAction.next,
             autoFocus: false,
             onChanged: (value) {
-              _formStore.setUserId(_userEmailController.text);
+              widget.loginViewModel.setEmail(_userEmailController.text);
             },
             onFieldSubmitted: (value) {
               FocusScope.of(context).requestFocus(_passwordFocusNode);
             },
-            errorText: state.formErrorState.userEmail,
+            errorText: state.emailError,
           ),
         );
       },
@@ -188,11 +187,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildPasswordField() {
-    return BlocBuilder<MyFormStore, MyFormState>(
-      bloc: _formStore,
+    return BlocBuilder<LoginViewModel, LoginViewState>(
+      bloc: widget.loginViewModel,
       buildWhen: (previous, current) =>
           previous.password != current.password ||
-          previous.formErrorState.password != current.formErrorState.password,
+          previous.passwordError != current.passwordError,
       builder: (context, state) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -214,9 +213,9 @@ class _LoginScreenState extends State<LoginScreen> {
               iconColor: Colors.black,
               textController: _passwordController,
               focusNode: _passwordFocusNode,
-              errorText: state.formErrorState.password,
+              errorText: state.passwordError,
               onChanged: (value) {
-                _formStore.setPassword(_passwordController.text);
+                widget.loginViewModel.setPassword(_passwordController.text);
               },
             ),
           ),
@@ -243,8 +242,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSignInButton() {
-    return BlocBuilder<MyFormStore, MyFormState>(
-      bloc: _formStore,
+    return BlocBuilder<LoginViewModel, LoginViewState>(
+      bloc: widget.loginViewModel,
       buildWhen: (previous, current) => previous.canLogin != current.canLogin,
       builder: (context, state) {
         return RoundedButtonWidget(
@@ -255,10 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onPressed: () async {
             if (state.canLogin) {
               DeviceUtils.hideKeyboard(context);
-              _authStore.login(
-                _userEmailController.text,
-                _passwordController.text,
-              );
+              widget.loginViewModel.login();
             } else {
               _showErrorMessage('Please fill in all fields');
             }

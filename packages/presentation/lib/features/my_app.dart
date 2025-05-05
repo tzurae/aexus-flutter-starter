@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   final LanguageStore _languageStore = getIt<LanguageStore>();
   final GlobalErrorStore _globalErrorCubit = getIt<GlobalErrorStore>();
 
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

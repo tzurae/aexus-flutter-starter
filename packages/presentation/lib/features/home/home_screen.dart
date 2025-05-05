@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:presentation/features/auth/store/auth_store.dart';
 import 'package:presentation/features/language/language_state.dart';
 import 'package:presentation/features/language/language_store.dart';
-import 'package:presentation/features/post/post_list.dart';
+import 'package:presentation/features/post/post_list_screen.dart';
 import 'package:presentation/features/theme/theme_state.dart';
 import 'package:presentation/features/theme/theme_store.dart';
 import 'package:presentation/foundation/navigation/navigation_service.dart';
