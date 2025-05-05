@@ -1,4 +1,4 @@
-// import 'package:rizzlt_flutter_starter/domain/entity/post/post.dart';
+// import 'package:rizzlt_flutter_starter/domain/entity/post/post_viewmodel.dart';
 //
 // class PostList {
 //   final List<Post>? posts;

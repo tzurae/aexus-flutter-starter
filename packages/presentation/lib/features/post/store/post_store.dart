@@ -1,92 +1,73 @@
+import 'package:applications/dto/post_dto.dart';
 import 'package:applications/usecase/post/get_posts_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:presentation/features/post/viewmodel/post.dart';
+import 'package:presentation/features/post/store/post_state.dart';
+import 'package:presentation/features/post/viewmodel/post_viewmodel.dart';
+import 'package:presentation/foundation/extensions/api_handling_Cubit.dart';
+import 'package:presentation/foundation/services/api_handler_service.dart';
 import 'package:presentation/shared/enum/resource_state.dart';
 
-class PostListState {
-  final ResourceState resourceState;
-  final List<PostViewModel> posts;
-  final String? errorMessage;
-
-  PostListState({
-    required this.resourceState,
-    required this.posts,
-    this.errorMessage,
-  });
-
-  factory PostListState.initial() => PostListState(
-        resourceState: ResourceState.init,
-        posts: [],
-      );
-
-  factory PostListState.loading({List<PostViewModel>? currentPosts}) =>
-      PostListState(
-        resourceState: ResourceState.loading,
-        posts: currentPosts ?? const [],
-      );
-
-  factory PostListState.success(List<PostViewModel> posts) => PostListState(
-        resourceState: ResourceState.success,
-        posts: posts,
-      );
-
-  factory PostListState.empty() => PostListState(
-        resourceState: ResourceState.empty,
-        posts: [],
-      );
-
-  factory PostListState.error(String message,
-          {List<PostViewModel>? currentPosts}) =>
-      PostListState(
-        resourceState: ResourceState.error,
-        posts: currentPosts ?? const [],
-        errorMessage: message,
-      );
-
-  PostListState copyWith({
-    ResourceState? resourceState,
-    List<PostViewModel>? posts,
-    String? errorMessage,
-  }) {
-    return PostListState(
-      resourceState: resourceState ?? this.resourceState,
-      posts: posts ?? this.posts,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-  }
-}
-
 class PostListStore extends Cubit<PostListState> {
+  final ApiHandlerService _apiHandler;
   final GetPostsUseCase _getPostsUseCase;
-  PostListStore(this._getPostsUseCase)
-      : super(PostListState(resourceState: ResourceState.init, posts: []));
+
+  PostListStore(
+    this._apiHandler,
+    this._getPostsUseCase,
+  ) : super(PostListState.initial());
 
   Future<void> getPosts() async {
-    emit(PostListState.loading(currentPosts: state.posts));
-    try {
-      final postsListDTO = await _getPostsUseCase.call(params: null);
-
-      if (postsListDTO.isEmpty) {
-        // logger.d("Posts empty - setting state to empty");
-        emit(PostListState.empty());
-      } else {
-        final posts = postsListDTO
-            .map(
-              (postDTO) => PostViewModel(post: postDTO),
-            )
-            .toList();
-        emit(PostListState.success(posts));
-      }
-    } catch (e) {
-      emit(PostListState.error(e.toString(), currentPosts: state.posts));
-    }
+    await handleApiRequest<List<dynamic>>(
+      apiHandler: _apiHandler,
+      apiCall: () async {
+        return await _getPostsUseCase.call(params: null);
+      },
+      loadingStateBuilder: (state) => state.copyWith(
+        resourceState: ResourceState.loading,
+        clearErrorMessage: true,
+      ),
+      successStateBuilder: (state, postsListDTO) {
+        if (postsListDTO.isEmpty) {
+          return state.copyWith(resourceState: ResourceState.empty);
+        } else {
+          final posts = postsListDTO
+              .map(
+                (postDTO) => PostViewModel(post: postDTO as PostDTO),
+              )
+              .toList();
+          return state.copyWith(
+            resourceState: ResourceState.success,
+            posts: posts,
+          );
+        }
+      },
+      errorStateBuilder: (state, errorMessage) => state.copyWith(
+        resourceState: ResourceState.error,
+        errorMessage: errorMessage,
+      ),
+      context: 'PostListStore.getPosts',
+      handleAsGlobal: false,
+    );
   }
 
-  bool get isLoading => state.resourceState == ResourceState.loading;
-  bool get isSuccess => state.resourceState == ResourceState.success;
-  bool get isEmpty => state.resourceState == ResourceState.empty;
-  bool get isError => state.resourceState == ResourceState.error;
   List<PostViewModel> get posts => state.posts;
   String? get apiErrorMessage => state.errorMessage;
-  ResourceState get resourceState => state.resourceState;
+
+  @override
+  void emitError(String message) {
+    emit(state.copyWith(
+      resourceState: ResourceState.error,
+      errorMessage: message,
+    ));
+  }
+
+  @override
+  void resetError() {
+    if (state.hasError) {
+      emit(state.copyWith(
+        resourceState: ResourceState.init,
+        clearErrorMessage: true,
+      ));
+    }
+  }
 }

@@ -1,8 +1,9 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:presentation/features/post/store/post_state.dart';
 import 'package:presentation/features/post/store/post_store.dart';
-import 'package:presentation/features/post/viewmodel/post.dart';
+import 'package:presentation/features/post/viewmodel/post_viewmodel.dart';
 import 'package:presentation/foundation/widgets/progress_indicator_widget.dart';
 import 'package:presentation/shared/enum/resource_state.dart';
 import 'package:presentation/shared/utils/locale/app_localization.dart';
@@ -23,7 +24,7 @@ class PostListScreenState extends State<PostListScreen> {
     super.didChangeDependencies();
 
     // check to see if already called api
-    if (!_postStore.isLoading) {
+    if (!_postStore.state.isLoading) {
       _postStore.getPosts();
     }
   }

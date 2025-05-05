@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class PostDetailScreen extends StatefulWidget {
   final String postId;
   const PostDetailScreen({
-    Key? key,
     required this.postId,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _PostDetailDetail createState() => _PostDetailDetail();

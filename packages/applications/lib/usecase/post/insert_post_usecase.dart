@@ -1,5 +1,5 @@
 // import 'package:rizzlt_flutter_starter/core/domain/usecase/use_case.dart';
-// import 'package:rizzlt_flutter_starter/domain/entity/post/post.dart';
+// import 'package:rizzlt_flutter_starter/domain/entity/post/post_viewmodel.dart';
 // import 'package:rizzlt_flutter_starter/domain/repository/post/post_repository.dart';
 //
 // class InsertPostUseCase extends UseCase<int, Post> {
