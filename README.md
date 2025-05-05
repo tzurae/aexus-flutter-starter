@@ -108,7 +108,7 @@ This starter kit comes packed with features to get you going:
     *   `shared_preferences` for simple key-value pairs (settings, auth status).
     *   `sembast` example structure for embedded NoSQL storage, including encryption (`xxtea`).
 *   ☁️ **Remote Data:** Supabase integration example (Auth uses Supabase client, Posts use Dio - adaptable).
-*   ⚙️ **Configuration Management:** Environment-specific settings using `.env` files via `flutter_dotenv`.
+*   ⚙️ **Configuration Management:** Environment-specific settings using `--dart-define`.
 *   📝 **Logging:** Flexible custom logging (`core/logger`) with levels, formatting, and multiple output options (Console included, easy to add File, Analytics, etc.).
 *   ⚠️ **Error Handling:** Centralized (`GlobalErrorStore`) and localized error handling patterns.
 *   🎨 **Theming:** Dynamic light/dark theme support (`ThemeStore`).
