@@ -276,8 +276,8 @@ To ensure consistency across the codebase, please adhere to the following naming
     - **Data Sources:** Suffix with `DataSource` (e.g., `PostRemoteDataSource`, `ThemeLocalDataSource`).
     - **Stores/Cubits/Blocs:** Suffix with `Store`, `Cubit`, or `Bloc` based on the chosen state management pattern (e.g., `AuthStore`, `PostListCubit`).
     - **States:** Suffix with `State` (e.g., `AuthState`, `PostListState`).
-    - **Screens/Pages:** Suffix with `Screen` or `Page` (e.g., `LoginScreen`, `PostDetailPage`).
     - **Widgets:** Suffix with `Widget` if generic, or describe the specific UI element (e.g., `RoundedButtonWidget`, `UserProfileHeader`).
+    - **Screens:** All screens must use `_screen.dart` file naming convention (e.g., `login_screen.dart`, `post_detail_screen.dart`). Class names should still use PascalCase with Screen suffix (e.g., `LoginScreen`, `PostDetailScreen`).
     - **DTOs:** Suffix with `DTO` (e.g., `PostDTO`, `LoginParamsDTO`).
     - **Value Objects:** Suffix with `VO` (e.g., `LoginCredentialsVO`).
     - **Entities:** Use descriptive nouns (e.g., `User`, `Post`).
